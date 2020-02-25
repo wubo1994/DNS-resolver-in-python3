@@ -1,0 +1,41 @@
+My implementation of DNSSEC is as follows:
+
+First thing to do is to verify the validity of root zone ".",
+for checking the validity of messages come from root zone we need
+to do following things:
+
+   Apply for the DNSKEY of root zone, using dnspython this is achieved
+   by sending a special request to root zone:
+
+   request = dns.message.make_query('.', dns.rdatatype.DNSKEY, want_dnssec=True, payload=2048)
+   response = dns.query.udp(request, rootserver, timeout=3)
+
+   If success, the response will have the root zone's DNSKEY inside of its answer section,
+   as well as the signature of this DNSKEY, also inside the answer section of same response.
+   Then we first check the validity of this DNSKEY by decrypting the signature using public
+   key-signing-key that is contained in the DNSKEY and compare the result with the DNSKEY
+   that we got. Then second thing we do is to verify the DS record (from observation this 
+   is always inside the authority section in the response, notice this is a different response
+   with the one above, which is the response of "normal" request we send out, means the request
+   that we are trying to get actual answer we want from, in dnspython this can be achieved by
+   enable a specific flag (want_dnssec) when we make the request:
+
+   request = dns.message.make_query(domainText, dns.rdatatype.A, want_dnssec=True, payload=2048)
+
+   Then we fetch the DS record as well as the signature of this DS record from response's authority section,
+   use the public zone-signing-key to decrypt the signature and compare it with the DS.
+
+   Last thing we do is to verify the root zone by comparing the public key-signing-key that we received
+   with the two knowing keys that can be found online, this verification of root zone has to be trusted
+   since it's the start of this "trust chain".
+
+
+Above is the step of verifying root zone's integrity, basically in each of the iterations of resolving
+we do the same things except that the following steps have different zone verifying process: for verifying
+zones other than the root zone, we compare the hash of its public key-signing-key with the DS record that
+comes from its parent zone. We repeat same steps until we find the final answer we want, if any of these
+steps failed validation during the process, we output validation failed. 
+
+
+Acknowledgment: I consulted the YouTube video at this link to understand DNSSEC:
+https://www.youtube.com/watch?v=_8M_vuFcdZU

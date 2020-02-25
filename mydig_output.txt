@@ -1,0 +1,56 @@
+How to executing mydig:
+
+Type "python3 mydig.py <domain> <dnsType>" through command line,
+in which '<domain>' is the domain you wish to resolve and '<dnsType>'
+is the dns type you are requesting.
+
+
+Output of 'A' request:
+
+
+google.com   IN    A     172.217.10.14
+
+Mon Sep 23 20:30:44 2019
+QUESTION SECTION:
+google.com    IN    A
+
+ANSWER SECTION:
+google.com   IN    A     172.217.10.14
+
+Query time: 26 msec
+
+WHEN: Mon Sep 23 20:30:44 2019
+
+
+Output of 'NS' request:
+
+
+google.com   IN    NS     ns3.google.com.
+
+Mon Sep 23 21:05:22 2019
+QUESTION SECTION:
+google.com    IN    NS
+
+ANSWER SECTION:
+google.com   IN    NS     ns3.google.com.
+
+Query time: 46 msec
+
+WHEN: Mon Sep 23 21:05:22 2019
+
+
+Outout of 'MX' request:
+
+
+google.com   IN    MX     10 aspmx.l.google.com.
+
+Mon Sep 23 21:06:09 2019
+QUESTION SECTION:
+google.com    IN    MX
+
+ANSWER SECTION:
+google.com   IN    MX     10 aspmx.l.google.com.
+
+Query time: 36 msec
+
+WHEN: Mon Sep 23 21:06:09 2019
